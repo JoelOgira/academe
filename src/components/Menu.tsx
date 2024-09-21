@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+
 const menuItems = [
   {
     title: "MENU",
@@ -89,7 +92,7 @@ const menuItems = [
     ],
   },
   {
-    title: "OTHER",
+    title: "SETTINGS",
     items: [
       {
         icon: "/profile.png",
@@ -112,3 +115,27 @@ const menuItems = [
     ],
   },
 ];
+
+export default function Menu() {
+  return (
+    <div className="text-sm">
+      {menuItems.map((section) => (
+        <div className="flex flex-col gap-2" key={section.title}>
+          <span className="hidden underline lg:block text-muted-foreground my-4">
+            {section.title}
+          </span>
+          {section.items.map((item) => (
+            <Link
+              href={item.href}
+              key={item.label}
+              className="flex items-center py-2 text-gray-600 gap-4 justify-center lg:justify-start"
+            >
+              <Image src={item.icon} alt={item.label} width={20} height={20} />
+              <span className="hidden lg:block">{item.label}</span>
+            </Link>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
