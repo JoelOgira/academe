@@ -1,4 +1,6 @@
+import AttendanceCart from "@/components/attendance-chart";
 import CountCart from "@/components/count-chart";
+import FinanceCart from "@/components/finance-chart";
 import UserCard from "@/components/user-card";
 import { Metadata } from "next";
 
@@ -23,10 +25,15 @@ export default function AdminPage() {
           <div className="lg:w-1/3 h-[450px]">
             <CountCart />
           </div>
-          <div className="lg:w-2/3 h-[450px]"></div>
+          <div className="lg:w-2/3 h-[450px]">
+            <AttendanceCart />
+          </div>
         </div>
 
         {/* BOTTOM CHART */}
+        <div className="w-full h-[500px]">
+          <FinanceCart />
+        </div>
       </div>
 
       {/* RIGHT */}
