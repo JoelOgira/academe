@@ -1,12 +1,7 @@
 "use client";
 
 import { MoreHorizontal } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ResponsiveContainer,
   BarChart,
@@ -63,8 +58,13 @@ export default function AttendanceCart() {
               vertical={false}
               stroke="#ddd"
             />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} />
-            <YAxis axisLine={false} tickLine={false} />
+            <XAxis
+              dataKey="name"
+              axisLine={false}
+              tickLine={false}
+              fontSize="14px"
+            />
+            <YAxis axisLine={false} tickLine={false} fontSize="14px" />
             <Tooltip
               contentStyle={{ borderRadius: "10px", borderColor: "lightgray" }}
             />
