@@ -101,11 +101,17 @@ export default function FinanceCart() {
             <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
             <XAxis
               dataKey="name"
+              fontSize="14px"
               axisLine={false}
               tickLine={false}
               tickMargin={10}
             />
-            <YAxis axisLine={false} tickLine={false} tickMargin={10} />
+            <YAxis
+              fontSize="14px"
+              axisLine={false}
+              tickLine={false}
+              tickMargin={10}
+            />
             <Tooltip />
             <Legend
               align="center"
