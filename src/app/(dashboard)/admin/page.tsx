@@ -1,5 +1,7 @@
+import Announcements from "@/components/announcements";
 import AttendanceCart from "@/components/attendance-chart";
 import CountCart from "@/components/count-chart";
+import EventCalendar from "@/components/event-calendar";
 import FinanceCart from "@/components/finance-chart";
 import UserCard from "@/components/user-card";
 import { Metadata } from "next";
@@ -37,7 +39,10 @@ export default function AdminPage() {
       </div>
 
       {/* RIGHT */}
-      <div className="w-full lg:w-1/3"></div>
+      <div className="w-full lg:w-1/3 flex flex-col gap-8">
+        <EventCalendar />
+        <Announcements />
+      </div>
     </div>
   );
 }
