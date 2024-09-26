@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function AdminPage() {
   return (
-    <div className="flex flex-col gap-4 md:flex-row">
+    <div className="w-full h-fit flex flex-col gap-4 md:flex-row">
       {/* LEFT */}
       <div className="w-full flex flex-col gap-8 lg:w-2/3">
         <div className="flex gap-4 justify-between flex-wrap">
