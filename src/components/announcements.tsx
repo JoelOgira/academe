@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import {
   Card,
@@ -37,7 +36,7 @@ export default function Announcements() {
     <Card className="flex flex-col border-none rounded-xl p-0">
       <CardHeader className="p-4 pb-0">
         <CardTitle className="flex justify-between items-center">
-          <span className="text-lg">Announcements</span>
+          <span className="text-lg md:text-xl">Announcements</span>
           <CardDescription className="text-gray-400 text-sm font-normal">
             View All
           </CardDescription>
