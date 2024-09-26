@@ -46,7 +46,7 @@ export default function EventCalendar() {
         <Calendar value={value} onChange={onChange} />
         <div className="flex flex-col gap-4">
           <CardTitle className="flex justify-between items-center">
-            <span className="text-lg">Events</span>
+            <span className="text-lg md:text-xl">Events</span>
             <CardDescription>
               <MoreHorizontal className="size-4" />
             </CardDescription>
