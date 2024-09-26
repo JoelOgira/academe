@@ -1,3 +1,4 @@
+import { role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -124,16 +125,25 @@ export default function Menu() {
           <span className="hidden underline lg:block text-muted-foreground my-4">
             {section.title}
           </span>
-          {section.items.map((item) => (
-            <Link
-              href={item.href}
-              key={item.label}
-              className="flex items-center py-2 text-gray-600 gap-4 justify-center lg:justify-start"
-            >
-              <Image src={item.icon} alt={item.label} width={20} height={20} />
-              <span className="hidden lg:block">{item.label}</span>
-            </Link>
-          ))}
+          {section.items.map((item) => {
+            if (item.visible.includes(role)) {
+              return (
+                <Link
+                  href={item.href}
+                  key={item.label}
+                  className="flex items-center py-2 text-gray-600 gap-4 justify-center rounded md:px-2  hover:bg-skyBlue lg:justify-start"
+                >
+                  <Image
+                    src={item.icon}
+                    alt={item.label}
+                    width={20}
+                    height={20}
+                  />
+                  <span className="hidden lg:block">{item.label}</span>
+                </Link>
+              );
+            }
+          })}
         </div>
       ))}
     </div>
