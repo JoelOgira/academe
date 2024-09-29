@@ -28,10 +28,14 @@ export default function DashboardLayout({
         <Menu />
       </div>
       {/* RIGHT */}
-      <div className="w-[86%] p-4 bg-backgroundBlue overflow-scroll md:w-[92%] lg:w-[84%] xl:w-[86%] ">
+      <div className="flex flex-col gap-4 w-[86%] p-4 bg-backgroundBlue md:w-[92%] lg:w-[84%] xl:w-[86%] ">
         <Navbar />
         {children}
       </div>
     </div>
   );
+}
+
+{
+  /* <div className="overflow-scroll flex flex-col gap-4 w-[86%] p-4 bg-backgroundBlue md:w-[92%] lg:w-[84%] xl:w-[86%]" /> */
 }
