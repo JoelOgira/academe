@@ -3,7 +3,7 @@ import { SearchInput } from "./search-input";
 
 export default function Navbar() {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex items-center justify-between">
       {/* SEARCH */}
       <div className="hidden sm:flex">
         <SearchInput />
