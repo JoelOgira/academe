@@ -6,7 +6,7 @@ import React from "react";
 const SearchInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
-      <div className="relative">
+      <div className="relative w-full">
         <Input
           type={"text"}
           className={cn("pe-10 rounded-full", className)}
