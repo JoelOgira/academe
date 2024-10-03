@@ -26,11 +26,11 @@ export default function SingleTeacherPage() {
                   alt=""
                   width={144}
                   height={144}
-                  className="w-36 h-36 rounded-full object-cover"
+                  className="w-24 h-24 rounded-full object-cover md:w-36 md:h-36"
                 />
               </div>
               <div className="h-full w-2/3 flex flex-col justify-between gap-4">
-                <CardTitle>Wojack Murphy</CardTitle>
+                <CardTitle>John Doe</CardTitle>
                 <CardDescription>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 </CardDescription>
@@ -117,7 +117,7 @@ export default function SingleTeacherPage() {
                   className="w-6 h-6"
                 />
                 <CardHeader className="p-0 gap-2">
-                  <CardTitle className="text-xl">8</CardTitle>
+                  <CardTitle className="text-xl">6</CardTitle>
                   <CardDescription>Classes</CardDescription>
                 </CardHeader>
               </CardContent>
@@ -142,13 +142,13 @@ export default function SingleTeacherPage() {
           </h2>
           <div className="flex gap-4 flex-wrap text-xs text-muted-foreground">
             <Link href="/" className="p-3 rounded-md bg-skyBlue">
-              Teacher&apos;s Classes
+              Teacher&apos;s Lessons
             </Link>
             <Link href="/" className="p-3 rounded-md bg-lightSkyPurple">
-              Teacher&apos;s Students
+              Teacher&apos;s Teachers
             </Link>
             <Link href="/" className="p-3 rounded-md bg-lightSkyYellow">
-              Teacher&apos;s Lessons
+              Teacher&apos;s Results
             </Link>
             <Link href="/" className="p-3 rounded-md bg-pink-50">
               Teacher&apos;s Exams
