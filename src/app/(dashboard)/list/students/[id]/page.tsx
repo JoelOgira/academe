@@ -26,7 +26,7 @@ export default function SingleStudentPage() {
                   alt=""
                   width={144}
                   height={144}
-                  className="w-36 h-36 rounded-full object-cover"
+                  className="w-24 h-24 rounded-full object-cover md:w-36 md:h-36"
                 />
               </div>
               <div className="h-full w-2/3 flex flex-col justify-between gap-4">
