@@ -16,10 +16,10 @@ export default function AdminPage() {
       {/* LEFT */}
       <div className="w-full flex flex-col gap-8 lg:w-2/3">
         <div className="flex gap-4 justify-between flex-wrap">
-          <UserCard type="Students" />
-          <UserCard type="Teachers" />
-          <UserCard type="Parents" />
-          <UserCard type="Staffs" />
+          <UserCard type="admin" />
+          <UserCard type="teacher" />
+          <UserCard type="student" />
+          <UserCard type="parent" />
         </div>
 
         {/* MIDDLE CHART */}
