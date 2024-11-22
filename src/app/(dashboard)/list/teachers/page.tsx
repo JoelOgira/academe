@@ -66,7 +66,9 @@ const renderRow = (item: TeacherList) => (
         className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
       />
       <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
+        <Link className="hover:underline" href={`/list/teachers/${item.id}`}>
+          <h3 className="font-semibold">{item.name}</h3>
+        </Link>
         <p className="text-xs text-gray-500"> {item?.email} </p>
       </div>
     </td>
@@ -79,7 +81,7 @@ const renderRow = (item: TeacherList) => (
       {item.classes.map((classItem) => classItem.name).join(",")}
     </td>
     <td className="hidden lg:table-cell">{item?.phone}</td>
-    {role === "admin " && (
+    {role === "admin" && (
       <>
         <td className="hidden lg:table-cell">{item?.address}</td>
         <td>
@@ -104,7 +106,7 @@ export default async function TeacherListPage({
 }) {
   const { page, ...queryParams } = searchParams;
 
-  const p = page ? parseInt(page) : 1;
+  const p = queryParams.search ? 1 : page ? parseInt(page) : 1;
 
   // URL Params conditions
   const query: Prisma.TeacherWhereInput = {};
@@ -142,11 +144,12 @@ export default async function TeacherListPage({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy: {
+        name: "asc",
+      },
     }),
     prisma.teacher.count({ where: query }),
   ]);
-
-  // console.log(teachersData);
 
   return (
     <Card className="flex flex-1 gap-4 flex-col border-none">
