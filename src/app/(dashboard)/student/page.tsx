@@ -13,26 +13,16 @@ export const metadata: Metadata = {
 export default async function StudentPage() {
   const studentId = currentUserId;
 
-  // const student = await prisma.student.findUnique({
-  //   where: {
-  //     id: studentId!,
-  //   },
-  //   select: {
-  //     classId: true,
-  //   },
-  // });
-
-  // const classId = student?.classId;
-
-  const classItems = await prisma.class.findMany({
+  const student = await prisma.student.findUnique({
     where: {
-      students: {
-        some: {
-          id: studentId!,
-        },
-      },
+      id: studentId!,
+    },
+    select: {
+      classId: true,
     },
   });
+
+  const classId = student?.classId;
 
   return (
     <div className="flex size-full flex-col gap-4 xl:flex-row">
@@ -45,7 +35,7 @@ export default async function StudentPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="size-full mx-auto p-4 flex flex-col gap-6">
-            <BigCalendarContainer type="classId" id={classItems[0].id} />
+            <BigCalendarContainer type="classId" id={classId!} />
           </CardContent>
         </Card>
       </div>
