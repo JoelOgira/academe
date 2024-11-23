@@ -16,5 +16,15 @@ export const subjectSchema = z.object({
       message: "At least one teacher is required",
     }),
 });
-
 export type SubjectSchema = z.infer<typeof subjectSchema>;
+
+export const classSchema = z.object({
+  id: z.coerce.number().optional(),
+  name: z.string().min(1, {
+    message: "Class name is required",
+  }),
+  capacity: z.coerce.number().min(1, {
+    message: "Class capacity is required",
+  }),
+});
+export type ClassSchema = z.infer<typeof classSchema>;
