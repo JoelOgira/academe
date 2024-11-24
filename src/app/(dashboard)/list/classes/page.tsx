@@ -1,5 +1,4 @@
 import React from "react";
-import FormModal from "@/components/form-modal";
 import { SearchInput } from "@/components/search-input";
 import Table from "@/components/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import { ITEM_PER_PAGE } from "@/lib/utils";
 import TablePagination from "@/components/table-pagination";
 import { role } from "@/lib/settings";
 import { Metadata } from "next";
+import FormContainer from "@/components/form-container";
 
 export const metadata: Metadata = {
   title: "classes list",
@@ -47,30 +47,6 @@ const columns = [
     : []),
 ];
 
-const renderRow = (item: ClassesList) => (
-  <tr
-    key={item.id}
-    className="text-sm border-b border-gray-200 even:bg-gray-50 hover:bg-lightSkyPurple"
-  >
-    <td className="p-4">
-      <h3 className="font-semibold">{item.name}</h3>
-    </td>
-    <td className="hidden md:table-cell">{item.capacity}</td>
-    <td className="hidden lg:table-cell">{item.name[0]}</td>
-    <td className="hidden md:table-cell">{item.supervisor.name}</td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === "admin" && (
-          <>
-            <FormModal table="class" type="update" data={item} />
-            <FormModal table="class" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
-
 export default async function ClassListPage({
   searchParams,
 }: {
@@ -78,7 +54,7 @@ export default async function ClassListPage({
 }) {
   const { page, ...queryParams } = searchParams;
 
-  const p = page ? parseInt(page) : 1;
+  const p = queryParams.search ? 1 : page ? parseInt(page) : 1;
 
   const query: Prisma.ClassWhereInput = {};
 
@@ -114,11 +90,38 @@ export default async function ClassListPage({
       include: {
         supervisor: true,
       },
+      orderBy: {
+        name: "asc"
+      },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.class.count({ where: query }),
   ]);
+
+  const renderRow = (item: ClassesList) => (
+    <tr
+      key={item.id}
+      className="text-sm border-b border-gray-200 even:bg-gray-50 hover:bg-lightSkyPurple"
+    >
+      <td className="p-4">
+        <h3 className="font-semibold">{item.name}</h3>
+      </td>
+      <td className="hidden md:table-cell">{item.capacity}</td>
+      <td className="hidden lg:table-cell">{item.name[0]}</td>
+      <td className="hidden md:table-cell">{item.supervisor.name}</td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormContainer table="class" type="update" data={item} />
+              <FormContainer table="class" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
 
   return (
     <Card className="flex flex-1 gap-4 flex-col border-none">
@@ -140,7 +143,7 @@ export default async function ClassListPage({
             <button className="size-8 bg-skyYellow rounded-full flex justify-center items-center">
               <Image width={14} height={14} alt="sort icon" src="/sort.png" />
             </button>
-            {role === "admin" && <FormModal table="class" type="create" />}
+            {role === "admin" && <FormContainer table="class" type="create" />}
           </div>
         </div>
       </CardHeader>
