@@ -91,7 +91,7 @@ export default async function ClassListPage({
         supervisor: true,
       },
       orderBy: {
-        name: "asc"
+        name: "asc",
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
@@ -109,7 +109,7 @@ export default async function ClassListPage({
       </td>
       <td className="hidden md:table-cell">{item.capacity}</td>
       <td className="hidden lg:table-cell">{item.name[0]}</td>
-      <td className="hidden md:table-cell">{item.supervisor.name}</td>
+      <td className="hidden md:table-cell">{item.supervisor?.name}</td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" && (
