@@ -7,9 +7,9 @@ import { Class, Prisma, Teacher } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/utils";
 import TablePagination from "@/components/table-pagination";
-import { role } from "@/lib/settings";
 import { Metadata } from "next";
 import FormContainer from "@/components/form-container";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "classes list",
@@ -17,41 +17,14 @@ export const metadata: Metadata = {
 
 type ClassesList = Class & { supervisor: Teacher };
 
-const columns = [
-  {
-    header: "Class Name",
-    accessor: "className",
-  },
-  {
-    header: "Capacity",
-    accessor: "capacity",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Grade",
-    accessor: "grade",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Supervisor",
-    accessor: "supervisor",
-    className: "hidden md:table-cell",
-  },
-  ...(role === "admin"
-    ? [
-        {
-          header: "Actions",
-          accessor: "actions",
-        },
-      ]
-    : []),
-];
-
 export default async function ClassListPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
+  const { sessionClaims } = auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+
   const { page, ...queryParams } = searchParams;
 
   const p = queryParams.search ? 1 : page ? parseInt(page) : 1;
@@ -98,6 +71,36 @@ export default async function ClassListPage({
     }),
     prisma.class.count({ where: query }),
   ]);
+
+  const columns = [
+    {
+      header: "Class Name",
+      accessor: "className",
+    },
+    {
+      header: "Capacity",
+      accessor: "capacity",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Grade",
+      accessor: "grade",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Supervisor",
+      accessor: "supervisor",
+      className: "hidden md:table-cell",
+    },
+    ...(role === "admin"
+      ? [
+          {
+            header: "Actions",
+            accessor: "actions",
+          },
+        ]
+      : []),
+  ];
 
   const renderRow = (item: ClassesList) => (
     <tr
