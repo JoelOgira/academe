@@ -9,9 +9,8 @@ import { Prisma, Exam, Teacher, Class, Subject } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/utils";
 import { formatDate } from "@/lib/utils";
-import { role } from "@/lib/settings";
-import { currentUserId } from "@/lib/settings";
 import { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "exams list",
@@ -21,66 +20,15 @@ type ExamsList = Exam & {
   lesson: { subject: Subject; class: Class; teacher: Teacher };
 };
 
-const columns = [
-  {
-    header: "Subject Name",
-    accessor: "subjectName",
-  },
-  {
-    header: "Class",
-    accessor: "class",
-  },
-  {
-    header: "Teacher",
-    accessor: "teacher",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Date",
-    accessor: "date",
-    className: "hidden md:table-cell",
-  },
-  ...(role === "admin" || role === "teacher"
-    ? [
-        {
-          header: "Actions",
-          accessor: "actions",
-        },
-      ]
-    : []),
-];
-
-const renderRow = (item: ExamsList) => {
-  return (
-    <tr
-      key={item.id}
-      className="text-sm border-b border-gray-200 even:bg-gray-50 hover:bg-lightSkyPurple"
-    >
-      <td className="p-4">
-        <h3 className="font-semibold">{item.lesson.subject.name}</h3>
-      </td>
-      <td>{item.lesson.class.name}</td>
-      <td className="hidden md:table-cell">{`${item.lesson.teacher.name} ${item.lesson.teacher.surname}`}</td>
-      <td className="hidden md:table-cell">{formatDate(item.startTime)}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          {(role === "admin" || role == "teacher") && (
-            <>
-              <FormModal table="exam" type="update" data={item} />
-              <FormModal table="exam" type="delete" id={item.id} />
-            </>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
-};
-
 export default async function ExamListPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
+  const { sessionClaims, userId } = auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const currentUserId = userId;
+
   const { page, ...queryParams } = searchParams;
 
   const p = page ? parseInt(page) : 1;
@@ -179,6 +127,61 @@ export default async function ExamListPage({
     }),
     prisma.exam.count({ where: query }),
   ]);
+
+  const columns = [
+    {
+      header: "Subject Name",
+      accessor: "subjectName",
+    },
+    {
+      header: "Class",
+      accessor: "class",
+    },
+    {
+      header: "Teacher",
+      accessor: "teacher",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Date",
+      accessor: "date",
+      className: "hidden md:table-cell",
+    },
+    ...(role === "admin" || role === "teacher"
+      ? [
+          {
+            header: "Actions",
+            accessor: "actions",
+          },
+        ]
+      : []),
+  ];
+
+  const renderRow = (item: ExamsList) => {
+    return (
+      <tr
+        key={item.id}
+        className="text-sm border-b border-gray-200 even:bg-gray-50 hover:bg-lightSkyPurple"
+      >
+        <td className="p-4">
+          <h3 className="font-semibold">{item.lesson.subject.name}</h3>
+        </td>
+        <td>{item.lesson.class.name}</td>
+        <td className="hidden md:table-cell">{`${item.lesson.teacher.name} ${item.lesson.teacher.surname}`}</td>
+        <td className="hidden md:table-cell">{formatDate(item.startTime)}</td>
+        <td>
+          <div className="flex items-center gap-2">
+            {(role === "admin" || role == "teacher") && (
+              <>
+                <FormModal table="exam" type="update" data={item} />
+                <FormModal table="exam" type="delete" id={item.id} />
+              </>
+            )}
+          </div>
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <Card className="flex flex-1 gap-4 flex-col border-none">
