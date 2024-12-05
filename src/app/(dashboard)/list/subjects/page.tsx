@@ -1,7 +1,6 @@
 import { SearchInput } from "@/components/search-input";
 import Table from "@/components/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { role } from "@/lib/settings";
 import Image from "next/image";
 import { Prisma, Subject, Teacher } from "@prisma/client";
 import prisma from "@/lib/prisma";
@@ -9,6 +8,7 @@ import { cn, ITEM_PER_PAGE } from "@/lib/utils";
 import TablePagination from "@/components/table-pagination";
 import { Metadata } from "next";
 import FormContainer from "@/components/form-container";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "subjects list",
@@ -16,27 +16,14 @@ export const metadata: Metadata = {
 
 type SubjectList = Subject & { teachers: Teacher[] };
 
-const columns = [
-  {
-    header: "Subject Name",
-    accessor: "subjectName",
-  },
-  {
-    header: "Teachers",
-    accessor: "teachers",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "actions",
-  },
-];
-
 export default async function SubjectListPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
+  const { sessionClaims } = auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+
   const { page, highlight, ...queryParams } = searchParams;
 
   const p = queryParams.search ? 1 : page ? parseInt(page) : 1;
@@ -77,6 +64,22 @@ export default async function SubjectListPage({
     prisma.subject.count({ where: query }),
   ]);
 
+  const columns = [
+    {
+      header: "Subject Name",
+      accessor: "subjectName",
+    },
+    {
+      header: "Teachers",
+      accessor: "teachers",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Actions",
+      accessor: "actions",
+    },
+  ];
+
   const renderRow = (item: SubjectList) => (
     <tr
       key={item.id}
@@ -91,7 +94,9 @@ export default async function SubjectListPage({
       </td>
 
       <td className="hidden md:table-cell">
-        {item.teachers.map((teacher) => teacher.name).join(", ")}
+        {item.teachers
+          .map((teacher) => `${teacher.name} ${teacher.surname}`)
+          .join(", ")}
       </td>
 
       <td>
