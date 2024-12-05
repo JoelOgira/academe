@@ -1,5 +1,4 @@
 import Announcements from "@/components/announcements";
-import BigCalendar from "@/components/big-calendar";
 import FormModal from "@/components/form-modal";
 import PerformanceChart from "@/components/performance-chart";
 import {
@@ -12,12 +11,24 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
+import BigCalendarContainer from "@/components/big-calendar-container";
+import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "single student page",
 };
 
-export default function SingleStudentPage() {
+export default async function SingleStudentPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
+
+  const student = await prisma.student.findUnique({
+    where: { id },
+  });
+
   return (
     <div className="size-full flex flex-col gap-4 xl:flex-row">
       {/* LEFT */}
@@ -158,7 +169,7 @@ export default function SingleStudentPage() {
           <h2 className="font-semibold leading-none tracking-tight text-lg md:text-xl">
             Student&apos;s Schedule
           </h2>
-          <BigCalendar />
+          <BigCalendarContainer type="classId" id={student?.classId!} />
         </div>
       </div>
 
