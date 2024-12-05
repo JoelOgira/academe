@@ -2,6 +2,7 @@
 const nextConfig = {
   images: {
     remotePatterns: [{ hostname: "images.pexels.com" }],
+    domains: ["utfs.io"],
   },
   output: "standalone",
 };
