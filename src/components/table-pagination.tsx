@@ -59,7 +59,7 @@ export default function TablePagination({
   return (
     <CardFooter className="pb-4">
       <Pagination>
-        <PaginationContent className="justify-between">
+        <PaginationContent className="justify-between flex-wrap">
           <PaginationItem>
             <PaginationPrevious
               disabled={!hasPrev}
