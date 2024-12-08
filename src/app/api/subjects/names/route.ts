@@ -15,7 +15,7 @@ export async function GET() {
     return NextResponse.json(subjects);
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch subjects count" },
+      { error: "Failed to fetch subjects" },
       { status: 500 }
     );
   }
