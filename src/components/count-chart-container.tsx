@@ -12,6 +12,8 @@ export default async function CountChartContainer() {
   const boys = data.find((d) => d.sex === "MALE")?._count || 0;
   const girls = data.find((d) => d.sex === "FEMALE")?._count || 0;
 
+  const total = boys + girls; // Calculate total once
+
   return (
     <Card className="flex flex-col border-none size-full rounded-xl">
       <CardHeader className="pb-0 px-4 pt-4">
@@ -26,7 +28,7 @@ export default async function CountChartContainer() {
           <div className="size-5 rounded-full bg-skyBlue" />
           <h2 className="font-bold">{boys}</h2>
           <h3 className="text-xs text-muted-foreground">
-            Boys ({Math.round((boys / (boys + girls)) * 100)} %)
+            Boys ({total > 0 ? Math.round((boys / total) * 100) : 0} %)
           </h3>
         </div>
 
@@ -34,7 +36,7 @@ export default async function CountChartContainer() {
           <div className="size-5 rounded-full bg-skyYellow" />
           <h2 className="font-bold">{girls}</h2>
           <h3 className="text-xs text-muted-foreground">
-            Girls ({Math.round((girls / (boys + girls)) * 100)}%)
+            Girls ({total > 0 ? Math.round((girls / total) * 100) : 0} %)
           </h3>
         </div>
       </CardFooter>
