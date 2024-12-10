@@ -15,6 +15,8 @@ import BigCalendarContainer from "@/components/big-calendar-container";
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { Teacher } from "@prisma/client";
+import { formatDate } from "@/lib/utils";
+import { MailIcon } from "lucide-react";
 
 export default async function SingleTeacherPage({
   params,
@@ -89,11 +91,11 @@ export default async function SingleTeacherPage({
                   <div className="flex items-center gap-2 w-full md:w-1/3 lg:w-full 2xl:w-[44%]">
                     <Image src="/date.png" alt="" width={14} height={14} />
                     <span className="text-muted-foreground">
-                      September 2001
+                      {formatDate(teacher?.birthday)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 w-full md:w-1/3 lg:w-full 2xl:w-[44%]">
-                    <Image src="/mail.png" alt="" width={14} height={14} />
+                    <MailIcon className="size-4" />
                     <span className="text-muted-foreground">
                       {teacher?.email}
                     </span>
@@ -108,8 +110,8 @@ export default async function SingleTeacherPage({
               </div>
             </CardContent>
           </Card>
-          <div className="flex flex-1 gap-4 justify-between flex-wrap">
-            <Card className="w-full p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="w-full p-4">
               <CardContent className="flex flex-row gap-4">
                 <Image
                   src="/singleAttendance.png"
@@ -124,7 +126,7 @@ export default async function SingleTeacherPage({
                 </CardHeader>
               </CardContent>
             </Card>
-            <Card className="w-full p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <Card className="w-full p-4">
               <CardContent className="flex flex-row gap-4">
                 <Image
                   src="/singleBranch.png"
@@ -139,7 +141,7 @@ export default async function SingleTeacherPage({
                 </CardHeader>
               </CardContent>
             </Card>
-            <Card className="w-full p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <Card className="w-full p-4">
               <CardContent className="flex flex-row gap-4">
                 <Image
                   src="/singleLesson.png"
@@ -152,11 +154,13 @@ export default async function SingleTeacherPage({
                   <CardTitle className="text-xl">
                     {teacher?._count.lessons}
                   </CardTitle>
-                  <CardDescription>{teacher?._count.lessons === 1 ? "Lesson" : "Lessons"}</CardDescription>
+                  <CardDescription>
+                    {teacher?._count.lessons === 1 ? "Lesson" : "Lessons"}
+                  </CardDescription>
                 </CardHeader>
               </CardContent>
             </Card>
-            <Card className="w-full p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <Card className="w-full p-4">
               <CardContent className="flex flex-row gap-4">
                 <Image
                   src="/singleClass.png"
@@ -166,8 +170,12 @@ export default async function SingleTeacherPage({
                   className="w-6 h-6"
                 />
                 <CardHeader className="p-0 gap-2">
-                  <CardTitle className="text-xl">{teacher?._count.classes}</CardTitle>
-                  <CardDescription>{teacher?._count.classes === 1 ? "Class" : "Classes"}</CardDescription>
+                  <CardTitle className="text-xl">
+                    {teacher?._count.classes}
+                  </CardTitle>
+                  <CardDescription>
+                    {teacher?._count.classes === 1 ? "Class" : "Classes"}
+                  </CardDescription>
                 </CardHeader>
               </CardContent>
             </Card>
