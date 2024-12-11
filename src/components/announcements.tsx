@@ -7,10 +7,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import prisma from "@/lib/prisma";
-import { role, currentUserId } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function Announcements() {
+  const { sessionClaims, userId } = auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const currentUserId = userId;
   // Role conditions
   const roleConditions = {
     teacher: { lessons: { some: { teacherId: currentUserId! } } },
