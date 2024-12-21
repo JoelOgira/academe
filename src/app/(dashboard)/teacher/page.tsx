@@ -3,14 +3,16 @@ import EventCalendar from "@/components/event-calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Metadata } from "next";
 import BigCalendarContainer from "@/components/big-calendar-container";
-import { currentUserId } from "@/lib/settings";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "teacher",
 };
 
 export default function TeacherPage() {
-  const teacherId = currentUserId
+  const { userId } = auth();
+
+  const teacherId = userId;
 
   return (
     <div className="flex flex-1 flex-col gap-4 xl:flex-row">
@@ -34,5 +36,5 @@ export default function TeacherPage() {
         <Announcements />
       </div>
     </div>
-  ); 
+  );
 }
