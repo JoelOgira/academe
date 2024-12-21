@@ -42,9 +42,9 @@ model Teacher {
   surname   String
   email     String?   @unique
   phone     String?   @unique
-  address   String
+  address   String?
   img       String?
-  bloodType String
+  bloodType String?
   sex       UserSex
   createdAt DateTime  @default(now())
   subjects  Subject[]
@@ -82,8 +82,8 @@ model Class {
   supervisor    Teacher?       @relation(fields: [supervisorId], references: [id], onDelete: Cascade)
   lessons       Lesson[]
   students      Student[]
-  gradeId       Int
-  grade         Grade          @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  gradeId       Int?
+  grade         Grade?         @relation(fields: [gradeId], references: [id], onDelete: Cascade)
   events        Event[]
   announcements Announcement[]
 }
