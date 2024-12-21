@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,29 +12,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { SubjectSchema, subjectSchema } from "@/lib/form-validation-schema";
 import { createSubject, updateSubject } from "@/lib/actions";
-import { Loader, Check, ChevronsUpDown, X } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ITEM_PER_PAGE } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { MultiSelect } from "../ui/multi-select";
 
 interface SubjectFormProps {
   type: "create" | "update";
@@ -53,7 +39,6 @@ export default function SubjectForm({
 }: SubjectFormProps) {
   const [error, setError] = useState<string>();
   const [isPending, startTransition] = useTransition();
-  const [openTeacherSelect, setOpenTeacherSelect] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -62,13 +47,8 @@ export default function SubjectForm({
     resolver: zodResolver(subjectSchema),
     defaultValues: {
       name: data?.name || "",
-      teachers: data?.teachers || [],
+      teachers: data?.teachers?.map((teacher: any) => teacher.id) || [],
     },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "teachers",
   });
 
   const navigateToNewSubject = async (
@@ -178,12 +158,12 @@ export default function SubjectForm({
           {error && (
             <p className="text-center text-destructive text-sm">{error}</p>
           )}
-          <div className="flex justify-between flex-wrap gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="w-full md:w-[48%]">
+                <FormItem className="w-full ">
                   <FormLabel>Subject Name</FormLabel>
                   <FormControl>
                     <Input
@@ -200,95 +180,25 @@ export default function SubjectForm({
             <FormField
               control={form.control}
               name="teachers"
-              render={() => (
-                <FormItem className="w-full md:w-[48%]">
+              render={({ field }) => (
+                <FormItem className="w-full">
                   <FormLabel>Teachers</FormLabel>
-                  <Popover
-                    open={openTeacherSelect}
-                    onOpenChange={setOpenTeacherSelect}
-                    modal={true}
-                  >
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "w-full justify-between",
-                            !fields.length && "text-muted-foreground"
-                          )}
-                        >
-                          <span className="flex-grow text-left truncate">
-                            {fields.length > 0
-                              ? fields.map((field) => field.name).join(", ")
-                              : "Select teachers"}
-                          </span>
-                          <div className="flex items-center">
-                            {type === "update" && fields.length > 0 && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="mr-2 h-8 px-2"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  form.setValue("teachers", []);
-                                }}
-                              >
-                                <X className="size-4" />
-                              </Button>
-                            )}
-                            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
-                          </div>
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[400px] p-0">
-                      <Command>
-                        <CommandInput placeholder="Search teachers..." />
-                        <CommandList>
-                          <ScrollArea className="h-[300px]">
-                            <CommandEmpty>No teachers found.</CommandEmpty>
-                            <CommandGroup>
-                              {relatedData?.teachers?.map((teacher) => {
-                                const isSelected = fields.some(
-                                  (field) => field.id === teacher.id
-                                );
-                                return (
-                                  <CommandItem
-                                    key={teacher.id}
-                                    value={`${teacher.name} ${teacher.surname}`}
-                                    onSelect={() => {
-                                      if (isSelected) {
-                                        const indexToRemove = fields.findIndex(
-                                          (field) => field.id === teacher.id
-                                        );
-                                        if (indexToRemove !== -1) {
-                                          remove(indexToRemove);
-                                        }
-                                      } else {
-                                        append({
-                                          id: teacher.id,
-                                          name: `${teacher.name} ${teacher.surname}`,
-                                        });
-                                      }
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        isSelected ? "opacity-100" : "opacity-0"
-                                      )}
-                                    />
-                                    {teacher.name} {teacher.surname}
-                                  </CommandItem>
-                                );
-                              })}
-                            </CommandGroup>
-                          </ScrollArea>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <MultiSelect
+                    modalPopover={true}
+                    asChild={true}
+                    options={
+                      relatedData?.teachers.map((teacher) => ({
+                        label: `${teacher.name} ${teacher.surname}`,
+                        value: teacher.id,
+                      })) || []
+                    }
+                    onValueChange={(value) => field.onChange(value)}
+                    defaultValue={field.value}
+                    placeholder="Select teachers"
+                    variant="default"
+                    animation={2}
+                    maxCount={3}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
