@@ -3,15 +3,17 @@ import BigCalendarContainer from "@/components/big-calendar-container";
 import EventCalendar from "@/components/event-calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Metadata } from "next";
-import { currentUserId } from "@/lib/settings";
 import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "student",
 };
 
 export default async function StudentPage() {
-  const studentId = currentUserId;
+  const { userId } = auth();
+
+  const studentId = userId;
 
   const student = await prisma.student.findUnique({
     where: {
