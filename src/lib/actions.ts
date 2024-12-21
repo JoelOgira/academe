@@ -1,9 +1,13 @@
 "use server";
-
-import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
-import { subjectSchema, SubjectSchema } from "./form-validation-schema";
+import {
+  classSchema,
+  ClassSchema,
+  subjectSchema,
+  SubjectSchema,
+} from "./form-validation-schema";
 
+// Subject
 export const createSubject = async (
   data: SubjectSchema
 ): Promise<{ success: boolean; error: string; subjectId?: number }> => {
@@ -34,18 +38,13 @@ export const createSubject = async (
       data: {
         name,
         teachers: {
-          connect: teachers.map((teacher) => ({ id: teacher.id })),
+          connect: teachers?.map((teacherId) => ({ id: teacherId })),
         },
       },
     });
 
     return { success: true, error: "", subjectId: newSubject.id };
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        throw new Error("A subject with this name already exists");
-      }
-    }
     return {
       success: false,
       error:
@@ -104,18 +103,13 @@ export const updateSubject = async (
       data: {
         name,
         teachers: {
-          set: teachers.map((teacher) => ({ id: teacher.id })),
+          set: teachers.map((teacherId) => ({ id: teacherId })),
         },
       },
     });
 
     return { success: true, error: "" };
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        throw new Error("A subject with this name already exists");
-      }
-    }
     return {
       success: false,
       error:
@@ -141,6 +135,142 @@ export const deleteSubject = async (
     }
 
     await prisma.subject.delete({
+      where: { id },
+    });
+
+    return { success: true, error: "" };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong please try again",
+    };
+  }
+};
+
+// Class
+export const createClass = async (
+  data: ClassSchema
+): Promise<{ success: boolean; error: string }> => {
+  try {
+    const { name, capacity, gradeId, supervisorId } = classSchema.parse(data);
+
+    const duplicateClass = await prisma.class.findFirst({
+      where: {
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
+      },
+    });
+
+    if (duplicateClass) {
+      return {
+        success: false,
+        error: "Class name already exists.",
+      };
+    }
+
+    await prisma.class.create({
+      data: {
+        name,
+        capacity,
+        gradeId,
+        supervisorId,
+      },
+    });
+
+    return { success: true, error: "" };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong please try again",
+    };
+  }
+};
+
+export const updateClass = async (
+  id: number,
+  data: ClassSchema
+): Promise<{ success: boolean; error: string }> => {
+  try {
+    const { name, capacity, gradeId, supervisorId } = classSchema.parse(data);
+
+    const existingClass = await prisma.class.findUnique({
+      where: { id },
+    });
+
+    if (!existingClass) {
+      return {
+        success: false,
+        error: "The class not found",
+      };
+    }
+
+    const duplicateClass = await prisma.class.findFirst({
+      where: {
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
+        NOT: {
+          id,
+        },
+      },
+    });
+
+    if (duplicateClass) {
+      return {
+        success: false,
+        error: "Class name already exists.",
+      };
+    }
+
+    // const classCapacity = parseFloat(capacity)
+
+    await prisma.class.update({
+      where: { id },
+      data: {
+        name,
+        capacity,
+        gradeId,
+        supervisorId,
+      },
+    });
+
+    return { success: true, error: "" };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong please try again",
+    };
+  }
+};
+
+export const deleteClass = async (
+  id: number
+): Promise<{ success: boolean; error: string }> => {
+  try {
+    const existingClass = await prisma.class.findUnique({
+      where: { id },
+    });
+
+    if (!existingClass) {
+      return {
+        success: false,
+        error: "The class not found",
+      };
+    }
+
+    await prisma.class.delete({
       where: { id },
     });
 
