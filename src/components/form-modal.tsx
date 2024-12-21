@@ -13,44 +13,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { ScrollArea } from "./ui/scroll-area";
-import { Loader, Loader2 } from "lucide-react";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { Loader, Trash2Icon } from "lucide-react";
 import dynamic from "next/dynamic";
-import { deleteSubject } from "@/lib/actions";
+import { deleteClass, deleteSubject } from "@/lib/actions";
+import { deleteTeacher } from "./forms/teacher/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { FormContainerProps } from "./form-container";
 
-const deleteActionMap = {
-  subject: deleteSubject,
-  // class: deleteClass,
-  // teacher: deleteTeacher,
-  // student: deleteStudent,
-  // exam: deleteExam,
-  // // TODO: OTHER DELETE ACTIONS
-  // parent: deleteSubject,
-  // lesson: deleteSubject,
-  // assignment: deleteSubject,
-  // result: deleteSubject,
-  // attendance: deleteSubject,
-  // event: deleteSubject,
-  // announcement: deleteSubject,
-};
-
-const TeacherForm = dynamic(() => import("./forms/teacher-form"), {
-  loading: () => <Loader2 className="size-6 animate-spin mx-auto" />,
+const ClassForm = dynamic(() => import("./forms/class-form"), {
+  loading: () => <Loader className="size-6 animate-spin mx-auto" />,
 });
 
-const StudentForm = dynamic(() => import("./forms/student-form"), {
-  loading: () => <Loader2 className="size-6 animate-spin mx-auto" />,
-});
-
-const ParentForm = dynamic(() => import("./forms/parent-form"), {
-  loading: () => <Loader2 className="size-6 animate-spin mx-auto" />,
+const TeacherForm = dynamic(() => import("./forms/teacher/teacher-form"), {
+  loading: () => <Loader className="size-6 animate-spin mx-auto" />,
 });
 
 const SubjectForm = dynamic(() => import("./forms/subject-form"), {
-  loading: () => <Loader2 className="size-6 animate-spin mx-auto" />,
+  loading: () => <Loader className="size-6 animate-spin mx-auto" />,
 });
 
 const forms: {
@@ -61,15 +42,22 @@ const forms: {
     relatedData?: any
   ) => JSX.Element;
 } = {
-  // teacher: (type, data, handleClose) => (
-  //   <TeacherForm type={type} data={data} handleClose={handleClose} />
-  // ),
-  // student: (type, data, handleClose) => (
-  //   <StudentForm type={type} data={data} handleClose={handleClose} />
-  // ),
-  // parent: (type, data, handleClose) => (
-  //   <ParentForm type={type} data={data} handleClose={handleClose} />
-  // ),
+  teacher: (type, data, handleClose, relatedData) => (
+    <TeacherForm
+      type={type}
+      data={data}
+      handleClose={handleClose}
+      relatedData={relatedData}
+    />
+  ),
+  class: (type, data, handleClose, relatedData) => (
+    <ClassForm
+      type={type}
+      data={data}
+      handleClose={handleClose}
+      relatedData={relatedData}
+    />
+  ),
   subject: (type, data, handleClose, relatedData) => (
     <SubjectForm
       type={type}
@@ -124,6 +112,40 @@ export default function FormModal({
         });
       }
 
+      if (table === "class") {
+        const { success, error } = await deleteClass(id as number);
+
+        if (!success) {
+          setError(error);
+          return;
+        }
+
+        handleClose();
+
+        toast({
+          title: "Success",
+          description: "Class deleted successfully",
+          duration: 3000,
+        });
+      }
+
+      if (table === "teacher") {
+        const { success, error } = await deleteTeacher(id as string);
+
+        if (!success) {
+          setError(error);
+          return;
+        }
+
+        handleClose();
+
+        toast({
+          title: "Success",
+          description: "Teacher deleted successfully",
+          duration: 3000,
+        });
+      }
+
       router.refresh();
     });
   };
@@ -139,10 +161,15 @@ export default function FormModal({
             </DialogDescription>
           )}
           <DialogDescription className="py-3">
-            Are you sure you want to delete this {table}?
+            Are you sure you want to delete this {table}? <br />
+            This action cannot be undone
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="flex items-center gap-2">
+          <Button onClick={handleClose} variant="outline">
+            Cancel
+          </Button>
+
           <Button
             onClick={() => handleDelete(id)}
             className="flex items-center gap-2"
@@ -151,6 +178,7 @@ export default function FormModal({
           >
             {isPending && <Loader className="size-4 animate-spin" />}
             {isPending ? "Deleting" : "Delete"}
+            {!isPending && <Trash2Icon className="size-4" />}
           </Button>
         </DialogFooter>
       </>
@@ -162,25 +190,23 @@ export default function FormModal({
   };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <button
-            className={cn(
-              "flex items-center justify-center rounded-full",
-              size,
-              bgColor
-            )}
-          >
-            <Image src={`/${type}.png`} alt="" width={16} height={16} />
-          </button>
-        </DialogTrigger>
-        <DialogContent>
-          <ScrollArea className="h-[80svh] md:h-full">
-            <Form />
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button
+          className={cn(
+            "flex items-center justify-center rounded-full",
+            size,
+            bgColor
+          )}
+        >
+          <Image src={`/${type}.png`} alt="" width={16} height={16} />
+        </button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90svh] overflow-hidden">
+        <ScrollArea className="pr-2 max-h-[calc(90svh-4rem)]">
+          <Form />
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   );
 }
