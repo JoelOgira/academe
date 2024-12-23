@@ -206,7 +206,7 @@ export default function TeacherForm({
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="w-full md:col-span-2">
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <PasswordInput {...field} />
