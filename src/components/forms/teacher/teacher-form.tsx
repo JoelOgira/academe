@@ -363,7 +363,7 @@ export default function TeacherForm({
               control={form.control}
               name="img"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="w-full md:col-span-2">
                   <FormLabel>Profile Photo</FormLabel>
                   <FormControl>
                     <Popover open={open} onOpenChange={setOpen}>
