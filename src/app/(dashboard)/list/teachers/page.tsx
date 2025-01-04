@@ -9,6 +9,11 @@ import Link from "next/link";
 import TablePagination from "@/components/table-pagination";
 import FormContainer from "@/components/form-container";
 import { auth } from "@clerk/nextjs/server";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "teachers list",
+};
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
