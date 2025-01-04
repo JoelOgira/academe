@@ -7,9 +7,10 @@ import Link from "next/link";
 import TablePagination from "@/components/table-pagination";
 import { Class, Prisma, Student } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { ITEM_PER_PAGE } from "@/lib/utils";
+import { cn, ITEM_PER_PAGE } from "@/lib/utils";
 import { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
+import FormContainer from "@/components/form-container";
 
 export const metadata: Metadata = {
   title: "students list",
@@ -26,9 +27,9 @@ export default async function StudentListPage({
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
 
-  const { page, ...queryParams } = searchParams;
+  const { page, highlight, ...queryParams } = searchParams;
 
-  const p = page ? parseInt(page) : 1;
+  const p = queryParams.search ? 1 : page ? parseInt(page) : 1;
 
   const query: Prisma.StudentWhereInput = {};
 
@@ -131,7 +132,11 @@ export default async function StudentListPage({
   const renderRow = (item: StudentsList) => (
     <tr
       key={item.id}
-      className="text-sm border-b border-gray-200 even:bg-gray-50 hover:bg-lightSkyPurple"
+      className={cn(
+        "text-sm border-b border-gray-200 even:bg-gray-50 hover:bg-lightSkyPurple",
+        highlight === item.id.toString() &&
+          "bg-lightSkyYellow transition-colors duration 300"
+      )}
     >
       <td className="flex items-center gap-2 p-4 lg:gap-4">
         <Image
@@ -160,7 +165,7 @@ export default async function StudentListPage({
                     <Image src="/view.png" alt="" width={16} height={16} />
                   </button>
                 </Link>
-                <FormModal table="student" type="delete" id={item?.id} />
+                <FormContainer table="student" type="delete" id={item?.id} />
               </>
             </div>
           </td>
