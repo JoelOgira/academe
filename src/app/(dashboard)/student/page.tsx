@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
-  title: "student",
+  title: "Student",
 };
 
 export default async function StudentPage() {
