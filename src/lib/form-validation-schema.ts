@@ -66,3 +66,44 @@ export const teacherSchema = z.object({
   subjects: z.array(z.string()).optional(),
 });
 export type TeacherSchema = z.infer<typeof teacherSchema>;
+
+export const StudentSchema = z.object({
+  id: z.string().optional(),
+  username: z
+    .string()
+    .min(3, {
+      message: "Username must be at least 3 characters.",
+    })
+    .max(20, {
+      message: "Username must be at most 20 characters.",
+    }),
+  password: z
+    .string()
+    .min(8, {
+      message: "Password must be at least 8 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+  name: z.string().min(3, {
+    message: "First name must be at least 3 characters.",
+  }),
+  surname: z.string().min(3, {
+    message: "Surname must be at least 3 characters.",
+  }),
+  email: z
+    .string()
+    .email({ message: "Invalid email address." })
+    .optional()
+    .or(z.literal("")),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  img: z.string().optional(),
+  bloodType: z.string().optional(),
+  birthday: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Invalid date format",
+  }),
+  sex: z.enum(["MALE", "FEMALE"], { message: "Gender is required" }),
+  classId: z.number().int().positive("Class is required"),
+  gradeId: z.number().int().positive("Grade is required"),
+  parentId: z.string().optional().nullable(),
+});
