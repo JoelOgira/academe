@@ -1,6 +1,10 @@
 "use server";
 
-import { teacherSchema, TeacherSchema } from "@/lib/form-validation-schema";
+import {
+  StudentSchema,
+  teacherSchema,
+  TeacherSchema,
+} from "@/lib/form-validation-schema";
 import prisma from "@/lib/prisma";
 import { createClerkClient } from "@clerk/nextjs/server";
 
@@ -8,7 +12,7 @@ const clerkClient = createClerkClient({
   secretKey: process.env.CLERK_SECRET_KEY,
 });
 
-export const createStudent = async (data: TeacherSchema) => {
+export const createStudent = async (data: StudentSchema) => {
   try {
     const validatedData = teacherSchema.parse(data);
 
