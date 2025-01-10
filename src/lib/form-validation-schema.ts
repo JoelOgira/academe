@@ -67,7 +67,7 @@ export const teacherSchema = z.object({
 });
 export type TeacherSchema = z.infer<typeof teacherSchema>;
 
-export const StudentSchema = z.object({
+export const studentSchema = z.object({
   id: z.string().optional(),
   username: z
     .string()
@@ -107,3 +107,5 @@ export const StudentSchema = z.object({
   gradeId: z.number().int().positive("Grade is required"),
   parentId: z.string().optional().nullable(),
 });
+
+export type StudentSchema = z.infer<typeof subjectSchema>;
