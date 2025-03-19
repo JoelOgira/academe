@@ -1,4 +1,4 @@
-# Academe School Management Dashboard
+# Academe School Management System
 
 ## Getting Started
 
